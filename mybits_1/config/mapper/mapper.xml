@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是命名空间,作用是为了与sql语句隔离-->
+<!-- mapper代理的开发规则:
+1 namespace必须是接口的全限定类名
+2 StatmateID必须和接口的方法名称一致
+3 Mapper接口方法的参数类型要和parameterType要一致
+4、Mapper接口方法的返回值类型和mapper.xml中定义的每个sql的resultType的类型相同
+-->
+<mapper namespace="com.itheima.mybatis.mapper.UserMapper">
+    <select id="getUserById" parameterType="int" resultType="user">
+        SELECT * FROM USER WHERE id = #{id};
+    </select>
+    <!-- 如果查询结果是返回list,resultType设置为list中的-->
+    <!-- 别名不区分大小写-->
+    <select id="getUserByName" parameterType="String" resultType="com.itheima.mybatis.po.User">
+        SELECT * FROM USER WHERE username LIKE '%${value}%'
+    </select>
+    <insert id="insertUser" parameterType="com.itheima.mybatis.po.User">
+       <!-- keyProperty:对于pojo(User)的主键属性-->
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO USER (username,birthday,sex,address)
+        VALUES (#{username},#{birthday},#{sex},#{address});
+    </insert>
+    <!-- 删除用户-->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM USER WHERE id = #{id1}
+    </delete>
+    <!-- 修改用户信息-->
+    <update id="updateUser" parameterType="com.itheima.mybatis.po.User">
+        UPDATE USER SET username=#{username} WHERE id=#{id};
+    </update>
+
+</mapper>
